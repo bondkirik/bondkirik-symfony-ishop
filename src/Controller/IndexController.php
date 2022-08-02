@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ShopItems;
 use App\Repository\ShopItemsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,12 +39,13 @@ class IndexController extends AbstractController
      * @param int $id
      * @return Response
      */
-    public function shopItem(int $id): Response
+    public function shopItem(ShopItems $shopItems): Response
     {
         return $this->render('index/shopItem.html.twig', [
-            'title' => 'SHOP ITEM' . $id,
-            'description' => 'description',
-            'price' => '100',
+            'id' => $shopItems->getId(),
+            'title' => $shopItems->getTitle(),
+            'description' => $shopItems->getDescription(),
+            'price' => $shopItems->getPrice(),
         ]);
     }
     /**
@@ -55,5 +57,7 @@ class IndexController extends AbstractController
             'title' => 'CART',
         ]);
     }
+
+
 
 }
