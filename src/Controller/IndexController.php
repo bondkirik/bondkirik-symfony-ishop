@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ShopCart;
 use App\Entity\ShopItems;
+use App\Repository\ShopCartRepository;
 use App\Repository\ShopItemsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,12 +63,22 @@ class IndexController extends AbstractController
     }
     /**
      * @Route("/shop/cart", name="shopCart")
+     *
+     * @param ShopCartRepository $cartRepository
+     * @return Response
      */
-    public function shopCart(): Response
+    public function shopCart(ShopCartRepository $cartRepository): Response
     {
-        return $this->render('index/shopCart.html.twig', [
-            'title' => 'CART',
-        ]);
+        $session = $this->session->getId();
+        $items = $cartRepository->findBy(['sessionId' => $session]);
+
+        return $this->render(
+            'index/shopCart.html.twig',
+            [
+                'title' => 'Basket',
+                'items' => $items,
+            ]
+        );
     }
 
     /**
