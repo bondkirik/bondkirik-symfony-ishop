@@ -17,4 +17,27 @@ class IndexController extends AbstractController
             'controller_name' => 'IndexController',
         ]);
     }
+
+    /**
+     * @Route("/shop/list", name="shopList")
+     */
+    public function shopList(): Response
+    {
+        return $this->render('index/index.html.twig', [
+            'controller_name' => 'SHOP LIST',
+        ]);
+    }
+
+    /**
+     * @Route("/shop/item/{id<\d+>}", name="shopItem")
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function shopItem(int $id): Response
+    {
+        return $this->render('index/index.html.twig', [
+            'controller_name' => 'SHOP ITEM' . $id,
+        ]);
+    }
 }
