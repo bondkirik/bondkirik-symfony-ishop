@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\ShopCart;
 use App\Entity\ShopItems;
+use App\Entity\ShopOrder;
+use App\Form\OrderFormType;
 use App\Repository\ShopCartRepository;
 use App\Repository\ShopItemsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,6 +80,47 @@ class IndexController extends AbstractController
             [
                 'title' => 'Basket',
                 'items' => $items,
+            ]
+        );
+    }
+
+    /**
+     * @Route("/shop/order", name="shopOrder")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function shopOrder(Request $request, EntityManagerInterface $em): Response
+    {
+
+        // just setup a fresh $task object (remove the example data)
+        $shopOrder = new ShopOrder();
+
+        $form = $this->createForm(OrderFormType::class, $shopOrder);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $shopOrder = $form->getData();
+
+            if ($shopOrder instanceof ShopOrder) {
+                $sessionId = $this->session->getId();
+                $shopOrder->setStatus(ShopOrder::STATUS_NEW_ORDER);
+                $shopOrder->setSessionId($sessionId);
+                $em->persist($shopOrder);
+                $em->flush();
+                //session_regenerate_id
+                $this->session->migrate();
+            }
+
+            return $this->redirectToRoute('index');
+        }
+
+
+        return $this->render(
+            'index/shopOrder.html.twig',
+            [
+                'title' => 'Checkout order',
+                'form' => $form->createView(),
             ]
         );
     }
