@@ -9,12 +9,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/index", name="app_index")
+     * @Route("/index", name="index")
      */
     public function index(): Response
     {
         return $this->render('index/index.html.twig', [
-            'controller_name' => 'IndexController',
+            'title' => 'IndexController',
         ]);
     }
 
@@ -23,8 +23,8 @@ class IndexController extends AbstractController
      */
     public function shopList(): Response
     {
-        return $this->render('index/index.html.twig', [
-            'controller_name' => 'SHOP LIST',
+        return $this->render('index/shopList.html.twig', [
+            'title' => 'SHOP LIST',
         ]);
     }
 
@@ -36,8 +36,20 @@ class IndexController extends AbstractController
      */
     public function shopItem(int $id): Response
     {
-        return $this->render('index/index.html.twig', [
-            'controller_name' => 'SHOP ITEM' . $id,
+        return $this->render('index/shopItem.html.twig', [
+            'title' => 'SHOP ITEM' . $id,
+            'description' => 'description',
+            'price' => '100',
         ]);
     }
+    /**
+     * @Route("/shop/cart", name="shopCart")
+     */
+    public function shopCart(): Response
+    {
+        return $this->render('index/shopCart.html.twig', [
+            'title' => 'CART',
+        ]);
+    }
+
 }
