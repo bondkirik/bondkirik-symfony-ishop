@@ -20,7 +20,7 @@
                 <p class="mb-auto">{{ description }}</p>
                 <h3 class="mb-1">{{ price }} EUR</h3>
 
-                <a href="#" class="btn btn-success mt-2" style="width: 200px;">Add</a>
+                <a href="{{ path('shopCartAdd', {'id': id}) }}" class="btn btn-success mt-2" style="width: 200px;">Add</a>
             </div>
 
         </div>

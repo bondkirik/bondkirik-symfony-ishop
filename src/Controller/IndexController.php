@@ -2,14 +2,26 @@
 
 namespace App\Controller;
 
+use App\Entity\ShopCart;
 use App\Entity\ShopItems;
 use App\Repository\ShopItemsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
+
+    private SessionInterface $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->session->start();
+    }
+
     /**
      * @Route("/index", name="index")
      */
@@ -58,6 +70,26 @@ class IndexController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/shop/cart/add/{id<\d+>}", name="shopCartAdd")
+     *
+     * @param ShopItems $shopItems
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function shopCartAdd(ShopItems $shopItems, EntityManagerInterface $em): Response
+    {
+        $sessionId = $this->session->getId();
 
+        $shopCart = (new ShopCart())
+            ->setShopItem($shopItems)
+            ->setCount(1)
+            ->setSessionId($sessionId);
+
+        $em->persist($shopCart);
+        $em->flush();
+
+        return $this->redirectToRoute('shopItem', ['id' => $shopItems->getId()]);
+    }
 
 }
